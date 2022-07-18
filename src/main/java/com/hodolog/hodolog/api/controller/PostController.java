@@ -1,17 +1,20 @@
 package com.hodolog.hodolog.api.controller;
 
 import com.hodolog.hodolog.api.request.PostCreate;
+import com.hodolog.hodolog.api.response.PostResponse;
+import com.hodolog.hodolog.api.service.PostService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Map;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class PostController {
+
+    private final PostService postService;
 
     // SSR -> jsp, thymeleaf, mustache, freemarker
     // SPA -> vue, react
@@ -25,7 +28,7 @@ public class PostController {
     }*/
 
     @PostMapping("/posts")
-    public Map<String, String> post(@RequestBody @Valid PostCreate params) throws Exception {
+    public void post(@RequestBody @Valid PostCreate request) throws Exception {
         // 데이터를 검증하는 이유
 
         // 1. client 개발자가 깜빡할 수 있다. 실수로 값을 안보낼 수 있다.
@@ -68,7 +71,14 @@ public class PostController {
             error.put(fieldName, errorMessage);
             return error;
         }*/
-        return Map.of();
+
+        // 넘어온 데이터를 DB에 저장
+        // Case1. 저장한 데이터 Entity를 내려주기
+        // Case2. 저장한 데이터의 Id를 내려주기
+        //      Client에서는 수신한 id를 글 조회 API를 통해서 데이터를 수신받음
+        // Case3. 응답 필요 없음 -> 클라이언트에서 모든 POST데이터 context를 관리함
+        postService.write(request);
+        // return Map.of("postId", postId);
     }
 
     // HTTP Method
@@ -76,4 +86,13 @@ public class PostController {
     // 글등록
     // POST METHOD
 
+    /*
+     * /posts -> 글 전체 조회(검색 + 페이징)
+     * /posts/{postId} -> 글 한개 조회
+     */
+    @GetMapping("/posts/{postId}")
+    public PostResponse get(@PathVariable(name = "postId") Long id) {
+        PostResponse response = postService.get(id);
+        return response;
+    }
 }
