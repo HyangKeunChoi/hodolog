@@ -130,10 +130,14 @@ class PostControllerTest {
     void test4() throws Exception {
         //given
         Post post = Post.builder()
-                .title("foo")
+                .title("123456789012345")
                 .content("bar")
                 .build();
         postRepository.save(post);
+
+        // 추가 요구사항(클라이언트 요구사항)
+        // json응답에서 title값 길이를 최대 10글자로 해주세요.
+        // Post entity <-> PostResponse는 같은 구조
 
         // expected = when + then
         mockMvc.perform(get("/posts/{postId}", post.getId())
@@ -141,7 +145,7 @@ class PostControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(post.getId()))
-                .andExpect(jsonPath("$.title").value("foo"))
+                .andExpect(jsonPath("$.title").value("1234567890"))
                 .andExpect(jsonPath("$.content").value("bar"))
                 .andDo(print());
     }

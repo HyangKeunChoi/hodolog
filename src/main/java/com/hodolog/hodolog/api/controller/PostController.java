@@ -1,7 +1,7 @@
 package com.hodolog.hodolog.api.controller;
 
-import com.hodolog.hodolog.api.domain.Post;
 import com.hodolog.hodolog.api.request.PostCreate;
+import com.hodolog.hodolog.api.response.PostResponse;
 import com.hodolog.hodolog.api.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,9 +91,8 @@ public class PostController {
      * /posts/{postId} -> 글 한개 조회
      */
     @GetMapping("/posts/{postId}")
-    public Post get(@PathVariable(name = "postId") Long id) {
-        Post post = postService.get(id);
-
-        return post;
+    public PostResponse get(@PathVariable(name = "postId") Long id) {
+        PostResponse response = postService.get(id);
+        return response;
     }
 }
