@@ -1,5 +1,6 @@
 package com.hodolog.hodolog.api.controller;
 
+import com.hodolog.hodolog.api.domain.Post;
 import com.hodolog.hodolog.api.request.PostCreate;
 import com.hodolog.hodolog.api.response.PostResponse;
 import com.hodolog.hodolog.api.service.PostService;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -91,8 +93,17 @@ public class PostController {
      * /posts/{postId} -> 글 한개 조회
      */
     @GetMapping("/posts/{postId}")
-    public PostResponse get(@PathVariable(name = "postId") Long id) {
-        PostResponse response = postService.get(id);
-        return response;
+    public PostResponse get(@PathVariable(name = "postId") Long postId) {
+        return postService.get(postId);
+    }
+
+    // 조회 API
+    // 지난 시간 - 단건 조회 API(1개의 글post를 가져오는 기능)
+    // 이번 시간 - 여러개의 글을 조회 API - 게시글 목록
+    // /posts
+
+    @GetMapping("/posts")
+    public List<PostResponse> getList() {
+        return postService.getList();
     }
 }
