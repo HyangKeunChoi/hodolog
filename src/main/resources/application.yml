@@ -9,3 +9,9 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true # 페이징 인덱스가 0이 아닌 1부터 시작
+        default-page-size: 5 # 페이징 기본 사이즈
