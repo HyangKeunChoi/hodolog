@@ -1,6 +1,7 @@
 package com.hodolog.hodolog.api.controller;
 
 import com.hodolog.hodolog.api.request.PostCreate;
+import com.hodolog.hodolog.api.request.PostEdit;
 import com.hodolog.hodolog.api.request.PostSearch;
 import com.hodolog.hodolog.api.response.PostResponse;
 import com.hodolog.hodolog.api.service.PostService;
@@ -106,5 +107,10 @@ public class PostController {
     public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
         // Pageable page : 웹 요청으로 넘어올때 페이징 인덱스가 0이 아닌 1로 시작 하기 위한 처리 + 기본값 5개씩 처리 (application.xml에 따라서)
         return postService.getList(postSearch);
+    }
+
+    @PatchMapping("/posts/{postId}")
+    public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit request) {
+        postService.edit(postId, request);
     }
 }

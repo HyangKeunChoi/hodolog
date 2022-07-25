@@ -1,13 +1,16 @@
 package com.hodolog.hodolog.api.service;
 
 import com.hodolog.hodolog.api.domain.Post;
+import com.hodolog.hodolog.api.domain.PostEditor;
 import com.hodolog.hodolog.api.repository.PostRepository;
 import com.hodolog.hodolog.api.request.PostCreate;
+import com.hodolog.hodolog.api.request.PostEdit;
 import com.hodolog.hodolog.api.request.PostSearch;
 import com.hodolog.hodolog.api.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,5 +60,26 @@ public class PostService {
         return postRepository.getList(postSearch)
                 .stream().map(PostResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void edit(Long id, PostEdit postEdit) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        // 값을 변경할떄 다른값으로 매핑시키는 위험을 방지하기 위해
+        // 빌더 패턴을 이용한다.
+        PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
+
+        // TODO : 이해하기 어려움
+        // 필요한 값만 변경한다.
+        // 만약 content가 null로 넘어오면
+        // null로 업데이트가 되는게 아니라
+        // 기존 값 그대로 유지한다.
+        PostEditor postEditor = editorBuilder.title(postEdit.getTitle())
+                .content(postEdit.getContent())
+                .build();
+
+        post.edit(postEditor);
     }
 }
