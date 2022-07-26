@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hodolog.hodolog.api.domain.Post;
 import com.hodolog.hodolog.api.repository.PostRepository;
 import com.hodolog.hodolog.api.request.PostCreate;
-import com.hodolog.hodolog.api.request.PostEdit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,11 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -32,8 +26,10 @@ class PostControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private PostRepository postRepository;
 
@@ -154,75 +150,18 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("글 여러개 조회")
+    @DisplayName("게시글 삭제")
     void test5() throws Exception {
-        //given
-        List<Post> requestPosts = IntStream.range(1, 31)
-                .mapToObj(i -> {
-                    return Post.builder()
-                            .title("호돌맨 제목 " + i)
-                            .content("반포자이 " + i)
-                            .build();
-                })
-                .collect(Collectors.toList());
-        postRepository.saveAll(requestPosts);
-
-        // expected = when + then
-        mockMvc.perform(get("/posts?page=1&size=10")
-                        .contentType(APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(10)))
-                .andExpect(jsonPath("$[0].title").value("호돌맨 제목 30"))
-                .andExpect(jsonPath("$[0].content").value("반포자이 30"))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("페이지를 0으로 요청하면 첫 페이지를 가져온다.")
-    void test6() throws Exception {
-        //given
-        List<Post> requestPosts = IntStream.range(1, 31)
-                .mapToObj(i -> {
-                    return Post.builder()
-                            .title("호돌맨 제목 " + i)
-                            .content("반포자이 " + i)
-                            .build();
-                })
-                .collect(Collectors.toList());
-        postRepository.saveAll(requestPosts);
-
-        // expected = when + then
-        mockMvc.perform(get("/posts?page=0&size=10")
-                        .contentType(APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(10)))
-                .andExpect(jsonPath("$[0].title").value("호돌맨 제목 30"))
-                .andExpect(jsonPath("$[0].content").value("반포자이 30"))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("글 제목 수정")
-    void test7() throws Exception {
-        //given
+        // given
         Post post = Post.builder()
-                .title("호돌맨")
-                .content("반포자이")
+                .title("foo")
+                .content("bar")
                 .build();
         postRepository.save(post);
 
-        PostEdit postEdit =  PostEdit.builder()
-                .title("호돌걸")
-                .content("반포자이")
-                .build();
-
-        // PATCH / posts/{postId}
-        mockMvc.perform(patch("/posts/{postId}", post.getId())
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(postEdit))
-                )
+        // expected when
+        mockMvc.perform(delete("/posts/{postId}", post.getId())
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
