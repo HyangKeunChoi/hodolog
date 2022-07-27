@@ -1,5 +1,6 @@
 package com.hodolog.hodolog.api.request;
 
+import com.hodolog.hodolog.api.exception.InvalidRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,4 +33,10 @@ public class PostCreate {
     // 1. 가독성이 좋다. (값 생성에 대한 유연함)
     // 2. 필요한 값만 받을 수 있다. // -> 생성자 오버로딩을 여러개 할 필요가 없다.
     // 3. 객체의 불변성
+
+    public void validate() {
+        if (title.contains("바보")) {
+            throw new InvalidRequest("title", "제목에 바보를 포함할 수 없습니다.");
+        }
+    }
 }

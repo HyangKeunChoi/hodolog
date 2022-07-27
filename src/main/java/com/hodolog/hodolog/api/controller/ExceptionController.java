@@ -1,8 +1,10 @@
 package com.hodolog.hodolog.api.controller;
 
+import com.hodolog.hodolog.api.exception.HodologException;
 import com.hodolog.hodolog.api.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -32,5 +34,33 @@ public class ExceptionController {
             errorResponse.addValidation(fieldError.getField(), fieldError.getDefaultMessage());
         }
         return errorResponse;
+    }
+
+
+    @ResponseBody
+    @ExceptionHandler(HodologException.class)
+    public ResponseEntity<ErrorResponse> hodologException(HodologException e) {
+
+        int statusCode = e.getStatusCode();
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(String.valueOf(statusCode))
+                .message(e.getMessage())
+                .validation(e.getValidation())
+                .build();
+
+        // 응답 json validation -> 키 : title / value : 바보를 포함할 수 없습니다.
+        /*if (e instanceof InvalidRequest) {
+            InvalidRequest invalidRequest = (InvalidRequest) e;
+            String fieldName = invalidRequest.getFileldName();
+            String message = invalidRequest.getMessage();
+            body.addValidation(fieldName, message);
+        }*/
+
+        // 응답 코드 + 바디
+        ResponseEntity<ErrorResponse> response = ResponseEntity.status(statusCode)
+                .body(body);
+
+        return response;
     }
 }
