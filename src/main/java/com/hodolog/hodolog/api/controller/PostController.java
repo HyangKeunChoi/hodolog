@@ -80,6 +80,10 @@ public class PostController {
         // Case2. 저장한 데이터의 Id를 내려주기
         //      Client에서는 수신한 id를 글 조회 API를 통해서 데이터를 수신받음
         // Case3. 응답 필요 없음 -> 클라이언트에서 모든 POST데이터 context를 관리함
+
+        // 제목에는 바보가 들어가면 안되는다는 상황
+        request.validate();
+
         postService.write(request);
         // return Map.of("postId", postId);
     }
@@ -112,11 +116,6 @@ public class PostController {
     @PatchMapping("/posts/{postId}")
     public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit request) {
         postService.edit(postId, request);
-    }
-
-    @DeleteMapping("/posts/{postId}")
-    public void delete(@PathVariable Long postId) {
-        postService.delete(postId);
     }
 
     @DeleteMapping("/posts/{postId}")
