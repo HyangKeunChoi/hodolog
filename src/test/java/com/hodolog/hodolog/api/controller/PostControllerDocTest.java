@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,7 +61,7 @@ public class PostControllerDocTest {
         mockMvc.perform(RestDocumentationRequestBuilders.get("/posts/{postId}", 1L).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("index",
+                .andDo(document("post-inquiry",
                         pathParameters(
                                 parameterWithName("postId").description("게시글 ID")
                         ),
@@ -91,10 +92,10 @@ public class PostControllerDocTest {
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("index",
+                .andDo(document("post-create",
                         PayloadDocumentation.requestFields(
-                                PayloadDocumentation.fieldWithPath("title").description("제목"),
-                                PayloadDocumentation.fieldWithPath("content").description("내용")
+                                PayloadDocumentation.fieldWithPath("title").description("제목").attributes(key("constraint").value("좋은제목 입력해 주세요.")),
+                                PayloadDocumentation.fieldWithPath("content").description("내용").optional()
                         )
 
                 ));
