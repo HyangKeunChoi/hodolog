@@ -14,3 +14,6 @@
 ![img.png](img.png)
 
 ![img_1.png](img_1.png)
+
+### 리눅스 썻던 명령어 search (reverse-i-search)
++ ctrl + r + 생각나는 단어
