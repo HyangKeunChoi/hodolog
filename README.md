@@ -39,4 +39,19 @@
 
 + netstat : 네트워크 상태 확인
 
-  
+## 인증
++ 글 작성시 아무나 api call하면 등록이 됨
+
+## 2가지 방법을 이용해보자
+1. Get Parameter : url 리소스에 불필요한 값이 추가되는 문제가 있다.
+2. Header로 체크
+
+## Interceptor 사용하기
++ HandlerIntercepter를 구현하는 방식으로
+  - preHandle
+  - postHandle
+  - afterCompletion
+
++ WebMvcConfigurer에 다가 등록을 해야지 동작함
+  - 특정 api에는 인증을 제외하고 싶다면?
+    - excludePathPatterns에다가 추가하면 됨
