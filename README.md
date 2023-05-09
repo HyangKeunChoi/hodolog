@@ -55,3 +55,15 @@
 + WebMvcConfigurer에 다가 등록을 해야지 동작함
   - 특정 api에는 인증을 제외하고 싶다면?
     - excludePathPatterns에다가 추가하면 됨
+
+### 세션토큰 발급기능 추가에서
++ controller response 테스트
+```java
+mockMvc.perform(post("/auth/login")
+      .contentType(APPLICATION_JSON)
+      .content(json))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.accessToken", Matchers.notNullValue()))
+      .andDo(print());
+```
+
