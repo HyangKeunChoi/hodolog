@@ -67,3 +67,5 @@ mockMvc.perform(post("/auth/login")
       .andDo(print());
 ```
 
+## Base64 인코딩, 디코딩
++ byte arr <-> string
